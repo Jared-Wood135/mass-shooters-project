@@ -14,11 +14,12 @@
 9. stat1
 10. stat2
 11. stat3
-12. models
-13. models_best
-14. acquire
-15. prepare
-16. wrangle
+12. baseline
+13. models
+14. models_best
+15. acquire
+16. prepare
+17. wrangle
 '''
 
 # =======================================================================================================
@@ -96,19 +97,19 @@ def visual2():
     mpl.style.use('bmh')
     full = w.prepare_mass_shooters()
     removed_outlier = full[full.agg_casualties != 927]
-    casualties_wo_outlier = removed_outlier.groupby('year')['agg_casualties'].sum()
-    casualties_w_outlier = full.groupby('year')['agg_casualties'].sum()
+    casualties_wo_outlier = removed_outlier.groupby('year')['agg_casualties'].mean()
+    casualties_w_outlier = full.groupby('year')['agg_casualties'].mean()
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
     axs[0].plot(casualties_wo_outlier.index, casualties_wo_outlier.values, label='Annual Casualties')
-    axs[0].set_title('Casualties By Year (Without Outlier)')
+    axs[0].set_title('Avg. Casualties By Year (Without Outlier)')
     axs[0].set_xlabel('Year')
-    axs[0].set_ylabel('Total Casualties')
+    axs[0].set_ylabel('Avg. Casualties')
     sns.regplot(data=casualties_wo_outlier, x=casualties_wo_outlier.index, y=casualties_wo_outlier.values, scatter=False, ci=0, label='Trend Line', ax=axs[0])
     axs[0].legend()
     axs[1].plot(casualties_w_outlier.index, casualties_w_outlier.values, label='Annual Casualties')
-    axs[1].set_title('Casualties By Year (With Outlier)')
+    axs[1].set_title('Avg. Casualties By Year (With Outlier)')
     axs[1].set_xlabel('Year')
-    axs[1].set_ylabel('Total Casualties')
+    axs[1].set_ylabel('Avg. Casualties')
     sns.regplot(data=casualties_w_outlier, x=casualties_w_outlier.index, y=casualties_w_outlier.values, scatter=False, ci=0, label='Trend Line', ax=axs[1])
     axs[1].legend()
     plt.subplots_adjust(wspace=0.3)
@@ -130,7 +131,7 @@ def visual3():
     OUTPUT:
     Displays 3rd visual
     '''
-    mpl.style.use('bmh')
+    mpl.style.use('ggplot')
     full = w.prepare_mass_shooters()
     sns.histplot(data=full, x='shooter_volatility')
     plt.title('Distribution of Shooter Volatility')
@@ -319,7 +320,51 @@ def stat3():
 
 # =======================================================================================================
 # stat3 END
-# stat3 TO models
+# stat3 TO baseline
+# baseline START
+# =======================================================================================================
+
+def baseline():
+    '''
+    Returns a pandas dataframe with the baseline model for the 'final_report.ipynb'...
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    baseline_model = pandas dataframe with only the baseline model
+    '''
+    train, validate, test = w.wrangle_mass_shooters()
+    models_dict = {
+    'model_name' : [],
+    'model_type' : [],
+    'model_descriptor' : [],
+    'accuracy_train' : [],
+    'accuracy_val' : [],
+    'accuracy_diff' : [],
+    'recall_variable' : [],
+    'recall_train' : [],
+    'recall_val' : [],
+    'recall_diff' : []
+    }
+    baseline_train = round((train.shooter_volatility == train.shooter_volatility.mode()[0]).sum() / train.shape[0], 3)
+    baseline_val = round((validate.shooter_volatility == validate.shooter_volatility.mode()[0]).sum() / validate.shape[0], 3)
+    models_dict['model_name'].append('Baseline')
+    models_dict['model_type'].append('Baseline')
+    models_dict['model_descriptor'].append('Mode = Low Volatility')
+    models_dict['accuracy_train'].append(baseline_train)
+    models_dict['accuracy_val'].append(baseline_val)
+    models_dict['accuracy_diff'].append(baseline_val - baseline_train)
+    models_dict['recall_variable'].append('High Volatility')
+    models_dict['recall_train'].append(0.000)
+    models_dict['recall_val'].append(0.000)
+    models_dict['recall_diff'].append(0.000)
+    baseline_model = pd.DataFrame(models_dict)
+    return baseline_model
+
+# =======================================================================================================
+# baseline END
+# baseline TO models
 # models START
 # =======================================================================================================
 
@@ -426,7 +471,7 @@ def models():
         models_dict['recall_val'].append(val_recall)
         models_dict['recall_diff'].append(recall_diff)
         models = pd.DataFrame(models_dict)
-        return models
+    return models
 
 # =======================================================================================================
 # models END

@@ -19,6 +19,7 @@
     </i></b></h3>
 </head></div>
 <h5>
+<li><a href='#executivesummary'>Executive Summary</a href></li>
 <li><a href='#description'>Project Description</a href></li>
 <li><a href='#goals'>Project Goals</a href></li>
 <li><a href='#hypo'>Hypothesis/Questions</a href></li>
@@ -28,6 +29,38 @@
 <li><a href='#takeaways'>Takeaways</a href></li>
 </h5>
 <br><br><br>
+
+
+
+
+
+<!-- Executive Summary -->
+<div style='background-color: orange'>
+<head>
+    <h3 align='center'><b><i>
+        <a id='executivesummary'></a>
+        Executive Summary:
+    </i></b></h3>
+</head></div>
+<h5>
+
+- <b><i>Project Goals</i></b>
+    - Attempt to predict whether a mass shooter is of high volatility (>10 casualties) or is of low volatility (<= 10 casualties).
+- <b><i>Key Findings</i></b>
+    - Orientation
+        - From 1966 - 2022, mass shooting events have increased as well as the total casualties
+    - Key Visuals
+        - Leads to increase in casualties:
+            - More unique felon crimes committed
+            - More unique traumatic events experienced
+            - More abnormalities the shooter exhibits
+- <b><i>Summary</i></b>
+    - It does appear that as an individual deviates further from normal life experiences, psyche, and has less inhibition to harm another, then the individual is more likely to become a highly volatile mass shooter. 
+- <b><i>Recommendations</i></b>
+    - Implementing this model (+42.9% recall) can give key decision makers in a mass shooting event a stronger drive to allocate more resources and/or quicker actions to a mass shooting event should the shooter be identified as highly volatile.
+</h5>
+<br><br><br>
+
 
 
 
@@ -42,7 +75,7 @@
 <a href='#tableofcontents'>Back to 'Table of Contents'</a>
 <br><br>
 <h5>
-Purely just templates to speed things along...
+Using a dataset of U.S. mass shooters from 1966 - JAN2023 given the <a href='https://www.theviolenceproject.org/'>Non-Profit organization: 'The Violence Project'</a href>, attempt to predict whether or not a mass shooter will be of high volatility (> 10 casualties) or of low volatility (<= 10 casualties).
 </h5>
 <br><br><br>
 
@@ -60,8 +93,8 @@ Purely just templates to speed things along...
 <a href='#tableofcontents'>Back to 'Table of Contents'</a>
 <br><br>
 <h5>
-<li>VIVA LA KISS METHOD!!!</li>
-<li>Keep</li>
+<li>Obtain and read the mass shooters dataset</li>
+<li>Ensure the data</li>
 <li>It</li>
 <li>Simple</li>
 <li>Stupid</li>

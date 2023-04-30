@@ -16,6 +16,9 @@
 11. stat3
 12. models
 13. models_best
+14. acquire
+15. prepare
+16. wrangle
 '''
 
 # =======================================================================================================
@@ -136,4 +139,63 @@ import explore as e
 
 # =======================================================================================================
 # models_best END
+# models_best TO acquire
+# acquire START
+# =======================================================================================================
+
+def acquire():
+    '''
+    Obtains the vanilla mass_shooters dataframe from the 'wrangle.py' file
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    mass_shooters = pandas dataframe
+    '''
+    mass_shooters = w.acquire_mass_shooters()
+    return mass_shooters
+
+# =======================================================================================================
+# acquire END
+# acquire TO prepare
+# prepare START
+# =======================================================================================================
+
+def prepare():
+    '''
+    Obtains the prepared mass_shooters dataframe from the 'wrangle.py' file
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    prepped_mass_shooters = pandas dataframe
+    '''
+    prepped_mass_shooters = w.prepare_mass_shooters()
+    return prepped_mass_shooters
+
+# =======================================================================================================
+# prepare END
+# prepare TO wrangle
+# wrangle START
+# =======================================================================================================
+
+def wrangle():
+    '''
+    Obtains the splitted mass_shooters dataframe from the 'wrangle.py' file
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    train = pandas dataframe with 70% of prepared mass_shooters dataframe
+    validate = pandas dataframe with 20% of prepared mass_shooters dataframe
+    test = pandas dataframe with 10% of prepared mass_shooters dataframe
+    '''
+    train, validate, test = w.wrangle_mass_shooters()
+    return train, validate, test
+
+# =======================================================================================================
+# wrangle END
 # =======================================================================================================

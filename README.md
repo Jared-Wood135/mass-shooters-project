@@ -76,7 +76,7 @@
     - Attempt to predict whether a mass shooter is of high volatility (>10 casualties) or is of low volatility (<= 10 casualties).
 - <b><i>Key Findings</i></b>
     - Orientation
-        - From 1966 - 2022, mass shooting events have increased as well as the total casualties
+        - From 1966 - 2022, mass shooting events have increased as well as the average casualties per shooting
     - Key Visuals
         - Leads to increase in casualties:
             - More unique felon crimes committed
@@ -103,7 +103,7 @@
 <a href='#tableofcontents'>Back to 'Table of Contents'</a>
 <br><br>
 <h5>
-Using a dataset of U.S. mass shooters from 1966 - JAN2023 given the <a href='https://www.theviolenceproject.org/'>Non-Profit organization: 'The Violence Project'</a>, attempt to predict whether or not a mass shooter will be of high volatility (> 10 casualties) or of low volatility (<= 10 casualties).
+Using a dataset of U.S. mass shooters from 1966 - JAN2023 given by the <a href='https://www.theviolenceproject.org/'>Non-Profit organization: 'The Violence Project'</a>, attempt to predict whether or not a mass shooter will be of high volatility (> 10 casualties) or of low volatility (<= 10 casualties).
 </h5>
 <br><br><br>
 
@@ -147,7 +147,7 @@ Using a dataset of U.S. mass shooters from 1966 - JAN2023 given the <a href='htt
 Hypothesis:
 </b></h4>
 <h5>
-I think that as a person is either exposed to and/or participates in more violence, hatred, and essentially anything that is outside of the normal scope of a person's life, then that person will become more accostomed to as well as more willing to harm another person.
+I think that as a person is exposed to and/or participates in more violence, hatred, and essentially anything that is outside of the normal scope of a person's life, then that person will become more accostomed to as well as more willing to harm another person.
 </h5>
 <br>
 <h4><b>

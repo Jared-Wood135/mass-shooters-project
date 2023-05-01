@@ -84,12 +84,12 @@
             - More abnormalities the shooter exhibits
 - <b><i>Summary</i></b>
     - Since 1966, mass shooting events as well as the average casualties have been increasing.
-    
+
     - It does appear that as an individual deviates further from normal life experiences, psyche, and has less inhibition to harm another, then the individual is more likely to become a highly volatile mass shooter. 
 - <b><i>Recommendations</i></b>
     - If you want the most accurate predictions overall, there's a 10.5% increase from the baseline at 73.7%...
 
-    - If you want the most accurate predictions for highly volatile shooters, there's a 71.4% increase from the baselinea t 71.4%...
+    - If you want the most accurate predictions for highly volatile shooters, there's a 71.4% increase from the baseline at 71.4%...
 
     - Implementing this model can give key decision makers in a mass shooting event a stronger drive to allocate more resources and/or quicker actions to a mass shooting event should the shooter be identified as highly volatile in order to subdue the threat.  However, due to the expansive information this model requires, I'd imagine this would need to be authorized through multiple legal filters such as nationally, locally, by OSHA, by HIPAA, etc. prior to implementation.
 </h5>
@@ -268,7 +268,7 @@ Questions:
 
 - If you want the most accurate predictions overall, there's a 10.5% increase from the baseline at 73.7%...
 
-- If you want the most accurate predictions for highly volatile shooters, there's a 71.4% increase from the baselinea t 71.4%...
+- If you want the most accurate predictions for highly volatile shooters, there's a 71.4% increase from the baseline at 71.4%...
 
 - Implementing this model can give key decision makers in a mass shooting event a stronger drive to allocate more resources and/or quicker actions to a mass shooting event should the shooter be identified as highly volatile in order to subdue the threat.  However, due to the expansive information this model requires, I'd imagine this would need to be authorized through multiple legal filters such as nationally, locally, by OSHA, by HIPAA, etc. prior to implementation.
 <br><br>

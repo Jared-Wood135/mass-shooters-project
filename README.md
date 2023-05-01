@@ -216,7 +216,7 @@ Questions:
 <li>Wrangle the data by properly acquiring the data then ensuring the data can be interpreted by both human and machine via preparation</li>
 <li>Explore for key features, relationships, and patterns</li>
 <li>Create clusters if and when necessary</li>
-<li>Create models to best predict quality</li>
+<li>Create models to best predict shooter's volatility</li>
 <li>Deliver takeaways</li>
 <br>
 <h4><b>Deliverables</b></h4>

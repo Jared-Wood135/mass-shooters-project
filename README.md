@@ -160,11 +160,11 @@ I think that as a person is exposed to and/or participates in more violence, hat
 Questions:
 </b></h4>
 <h5>
-<li>Does a person's criminal history show an increase in volatility?</li>
-<li>Does a person's cumulation of traumatic events show an increase in volatility?</li>
-<li>Does a person's exposure and/or participation in violence show an increase in volatility?</li>
-<li>Can I discern the shooter's motivation from the data given and see if a particular motivation shows an icrease in volatility?</li>
-<li>Does a person's overall accumulation of events that are significant and abnormal to a normal person's life show an increase in volatility?</li>
+<li>Does a person's criminal history show an increase in volatility? (Yes)</li>
+<li>Does a person's cumulation of traumatic events show an increase in volatility? (Yes)</li>
+<li>Does a person's exposure and/or participation in violence show an increase in volatility? (Yes)</li>
+<li>Can I discern the shooter's motivation from the data given and see if a particular motivation shows an increase in volatility? (To a particular extent)</li>
+<li>Does a person's overall accumulation of events that are significant and abnormal to a normal person's life show an increase in volatility? (Yes)</li>
 </h5>
 <br><br><br>
 
@@ -190,7 +190,7 @@ Questions:
 | ----- | ----- | ----- | ----- |
 | 197 Binary Columns(Prepared) | int | If something is true or not for a shooter | 1, 0 |
 | 13 Aggregate Column(Prepared) | float | Average score of 0 - 1 from the sum of select columns for each shooter | 0.45 |
-| 3 Datetime Columns(Prepared) | datetime | Datetimes of various specific columns |
+| 3 Datetime Columns(Prepared) | datetime | Datetimes of various specific columns | 2017-01-01 08:35:00 |
 | 41 Object Columns(Prepared) | Object | Columns that contain descriptions, locations, elaboration of specific circumstances, etc. | AZ |
 <br><br><br>
 

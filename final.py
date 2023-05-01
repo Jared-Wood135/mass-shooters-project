@@ -491,12 +491,12 @@ def models_best():
     top_model = pandas dataframe with top model for demonstration
     '''
     best_models_dict = {
-    'model_name' : ['Baseline', 'DTC6'],
-    'model_type' : ['Baseline', 'Decision Tree Classifier'],
-    'model_descriptor' : ['mode == "Low Volatility"', 'one_all'],
-    'accuracy' : [0.632, 0.632],
-    'recall_pos_label' : ['High Volatility', 'High Volatility'],
-    'recall' : [0.000, 0.429]
+    'model_name' : ['Baseline', 'DTC_aggregates2', 'DTC_aggregates3'],
+    'model_type' : ['Baseline', 'Decision Tree Classifier', 'Decision Tree Classifier'],
+    'model_descriptor' : ['mode == "Low Volatility"', '[agg_stress, agg_trauma, agg_health]', '[agg_stress, agg_trauma]'],
+    'accuracy' : [0.632, 0.579, 0.737],
+    'recall_pos_label' : ['High Volatility', 'High Volatility', 'High Volatility'],
+    'recall' : [0.000, 0.714, 0.571]
     }
     top_model = pd.DataFrame(best_models_dict)
     return top_model

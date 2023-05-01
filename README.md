@@ -260,9 +260,11 @@ Questions:
 <br><br>
 <h4><b>Recommendations:</b></h4>
 
-- Though the best model created performs the same as the baseline in terms of accuracy, the model does predict if a mass shooter is highly volatile 42.9% better than the baseline model.
+- If you want the most accurate predictions overall, there's a 10.5% increase from the baseline at 73.7%...
 
-- Implementing this model can give key decision makers in a mass shooting event a stronger drive to allocate more resources and/or quicker actions to a mass shooting event should the shooter be identified as highly volatile.
+- If you want the most accurate predictions for highly volatile shooters, there's a 71.4% increase from the baselinea t 71.4%...
+
+- Implementing this model can give key decision makers in a mass shooting event a stronger drive to allocate more resources and/or quicker actions to a mass shooting event should the shooter be identified as highly volatile in order to subdue the threat.  However, due to the expansive information this model requires, I'd imagine this would need to be authorized through multiple legal filters such as nationally, locally, by OSHA, by HIPAA, etc. prior to implementation.
 <br><br>
 <h4><b>Next Steps:</b></h4>
 

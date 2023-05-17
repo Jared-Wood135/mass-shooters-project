@@ -14,6 +14,7 @@
 9. remove_outliers
 10. drop_nullpct
 11. check_nulls
+12. unaggregated_mass_shooters
 '''
 
 # =======================================================================================================
@@ -771,4 +772,240 @@ def check_nulls(df):
 
 # =======================================================================================================
 # check_nulls END
+# check_nulls TO unaggregated_mass_shooters
+# unaggregated_mass_shooters START
+# =======================================================================================================
+
+def unaggregated_mass_shooters():
+    '''
+    THIS IS FOR POST-EXPLORATORY PURPOSES AND NOT THE INITAL AS SHOWN IN THE PROJECT
+    Takes the vanilla dataframe and performs necessary preparatory functions WITHOUT the aggregation
+    creation and column name editing
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    unaggregated_mass_shooters = Pandas dataframe with ONLY necessary data preparation
+    '''
+    mass_shooters = acquire_mass_shooters()
+    mass_shooters = mass_shooters.drop(mass_shooters[mass_shooters['Case #'] == '145, 146'].index)
+    drop_perpetratorname_cols = [
+        'Shooter Last Name',
+        'Shooter First Name'
+        ]
+    drop_date_cols = [
+        'Full Date'
+        ]
+    drop_location_cols = [
+        'Street Number',
+        'Street Name',
+        'Zip Code',
+        'Latitude',
+        'Longitude',
+        'State Code',
+        'Region',
+        'Metro/Micro Statistical Area Type',
+        'Location',
+        'Insider or Outsider',
+        'Workplace Shooting',
+        'Multiple Locations',
+        'Other Location',
+        'Armed Person on Scene',
+        'Specify Armed Person'
+        ]
+    drop_victim_cols = [
+        'Family Member Victim',
+        'Romantic Partner Victim',
+        'Kidnapping or Hostage Situation'
+        ]
+    drop_weapons_cols = [
+        'Total Firearms Brought to the Scene',
+        'Other Weapons or Gear',
+        'Specify Other Weapons or Gear',
+        ]
+    drop_resolutionofcase_cols = [
+        'On-Scene Outcome',
+        'Who Killed Shooter On Scene',
+        'Attempt to Flee',
+        'Insanity Defense',
+        'Criminal Sentence'
+        ]
+    mass_shooters = mass_shooters.drop(columns=drop_perpetratorname_cols)
+    mass_shooters = mass_shooters.drop(columns=drop_date_cols)
+    mass_shooters = mass_shooters.drop(columns=drop_location_cols)
+    mass_shooters = mass_shooters.drop(columns=drop_victim_cols)
+    mass_shooters = mass_shooters.drop(columns=drop_weapons_cols)
+    mass_shooters = mass_shooters.drop(columns=drop_resolutionofcase_cols)
+    mass_shooters, drop_null_pct_dict = drop_nullpct(mass_shooters, 0.20)
+    has_nulls = check_nulls(mass_shooters)
+    mass_shooters['Signs of Crisis Expanded'] = mass_shooters['Signs of Crisis Expanded'].fillna('None')
+    for col in has_nulls:
+        mass_shooters[col] = mass_shooters[col].fillna(mass_shooters[col].mode()[0])
+    for col in mass_shooters.columns:
+        if mass_shooters[col].dtype == 'object':
+            if mass_shooters[col].apply(lambda x: isinstance(x, str) and x.isspace()).any():
+                mass_shooters[col].replace(r'^\s*$', np.nan, regex=True, inplace=True)
+                mass_shooters[col].fillna(mass_shooters[col].mode()[0], inplace=True)
+    mass_shooters['Case #'] = mass_shooters['Case #'].astype(int)
+    mass_shooters['Day'] = np.where(mass_shooters['Day'] == '19-20', 19, mass_shooters['Day'])
+    mass_shooters['Day'] = mass_shooters['Day'].astype(int)
+    mass_shooters['Race'] = np.where(mass_shooters['Race'] == 'Moroccan', 6, mass_shooters['Race'])
+    mass_shooters['Race'] = np.where(mass_shooters['Race'] == 'Bosnian', 7, mass_shooters['Race'])
+    mass_shooters['Race'] = mass_shooters['Race'].astype(int)
+    mass_shooters['Criminal Record'] = np.where(mass_shooters['Criminal Record'] == '1`', 1, mass_shooters['Criminal Record'])
+    mass_shooters['Criminal Record'] = mass_shooters['Criminal Record'].astype(int)
+    mass_shooters['Gender'] = np.where(mass_shooters['Gender'] == 3.0, 0, mass_shooters['Gender'])
+    mass_shooters['Children'] = np.where(mass_shooters['Children'] == 5.0, 0, mass_shooters['Children'])
+    mass_shooters['History of Domestic Abuse'] = np.where(mass_shooters['History of Domestic Abuse'] == 3.0, 2, mass_shooters['History of Domestic Abuse'])
+    for col in mass_shooters.select_dtypes(include=float).columns.to_list():
+        mass_shooters[col] = mass_shooters[col].astype(int)
+    mass_shooters['adult_trauma_no_evidence'] = np.where(mass_shooters['Adult Trauma'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['adult_trauma_death_of_parent'] = np.where(mass_shooters['Adult Trauma'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['adult_trauma_death_or_loss_of_child'] = np.where(mass_shooters['Adult Trauma'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['adult_trauma_death_of_family_member_causing_significant_distress'] = np.where(mass_shooters['Adult Trauma'].astype(str).str.contains('3'), 1, 0)
+    mass_shooters['adult_trauma_from_war'] = np.where(mass_shooters['Adult Trauma'].astype(str).str.contains('4'), 1, 0)
+    mass_shooters['adult_trauma_accident'] = np.where(mass_shooters['Adult Trauma'].astype(str).str.contains('5'), 1, 0)
+    mass_shooters['adult_trauma_other'] = np.where(mass_shooters['Adult Trauma'].astype(str).str.contains('6'), 1, 0)
+    mass_shooters['voluntary_or_mandatory_counseling_na'] = np.where(mass_shooters['Voluntary or Mandatory Counseling'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['voluntary_or_mandatory_counseling_voluntary'] = np.where(mass_shooters['Voluntary or Mandatory Counseling'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['voluntary_or_mandatory_counseling_involuntary'] = np.where(mass_shooters['Voluntary or Mandatory Counseling'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['mental_illness_no_evidence'] = np.where(mass_shooters['Mental Illness'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['mental_illness_mood_disorder'] = np.where(mass_shooters['Mental Illness'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['mental_illness_thought_disorder'] = np.where(mass_shooters['Mental Illness'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['mental_illness_other_psychiatric_disorder'] = np.where(mass_shooters['Mental Illness'].astype(str).str.contains('3'), 1, 0)
+    mass_shooters['mental_illness_indication_but_no_diagnosis'] = np.where(mass_shooters['Mental Illness'].astype(str).str.contains('4'), 1, 0)
+    mass_shooters['known_family_mental_health_history_no_evidence'] = np.where(mass_shooters['Known Family Mental Health History'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['known_family_mental_health_history_parents'] = np.where(mass_shooters['Known Family Mental Health History'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['known_family_mental_health_history_other_relative'] = np.where(mass_shooters['Known Family Mental Health History'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['part_i_crimes_no_evidence'] = np.where(mass_shooters['Part I Crimes'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['part_i_crimes_homicide'] = np.where(mass_shooters['Part I Crimes'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['part_i_crimes_forcible_rape'] = np.where(mass_shooters['Part I Crimes'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['part_i_crimes_robbery'] = np.where(mass_shooters['Part I Crimes'].astype(str).str.contains('3'), 1, 0)
+    mass_shooters['part_i_crimes_aggravated_assault'] = np.where(mass_shooters['Part I Crimes'].astype(str).str.contains('4'), 1, 0)
+    mass_shooters['part_i_crimes_burglary'] = np.where(mass_shooters['Part I Crimes'].astype(str).str.contains('5'), 1, 0)
+    mass_shooters['part_i_crimes_larceny_theft'] = np.where(mass_shooters['Part I Crimes'].astype(str).str.contains('6'), 1, 0)
+    mass_shooters['part_i_crimes_motor_vehicle_theft'] = np.where(mass_shooters['Part I Crimes'].astype(str).str.contains('7'), 1, 0)
+    mass_shooters['part_i_crimes_arson'] = np.where(mass_shooters['Part I Crimes'].astype(str).str.contains('8'), 1, 0)
+    mass_shooters['part_ii_crimes_no_evidence'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['part_ii_crimes_simple_assault'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['part_ii_crimes_fraud_forgery_embezzlement'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['part_ii_crimes_stolen_property'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('3'), 1, 0)
+    mass_shooters['part_ii_crimes_vandalism'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('4'), 1, 0)
+    mass_shooters['part_ii_crimes_weapons_offenses'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('5'), 1, 0)
+    mass_shooters['part_ii_crimes_prostitution'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('6'), 1, 0)
+    mass_shooters['part_ii_crimes_drugs'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('7'), 1, 0)
+    mass_shooters['part_ii_crimes_dui'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('8'), 1, 0)
+    mass_shooters['part_ii_crimes_other'] = np.where(mass_shooters['Part II Crimes'].astype(str).str.contains('9'), 1, 0)
+    mass_shooters['domestic_abuse_specified_na'] = np.where(mass_shooters['Domestic Abuse Specified'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['domestic_abuse_specified_non_sexual'] = np.where(mass_shooters['Domestic Abuse Specified'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['domestic_abuse_specified_sexual_violence'] = np.where(mass_shooters['Domestic Abuse Specified'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['domestic_abuse_specified_threats_coercive_control'] = np.where(mass_shooters['Domestic Abuse Specified'].astype(str).str.contains('3'), 1, 0)
+    mass_shooters['domestic_abuse_specified_threats_with_deadly_weapon'] = np.where(mass_shooters['Domestic Abuse Specified'].astype(str).str.contains('4'), 1, 0)
+    mass_shooters['recent_or_ongoing_stressor_no_evidence'] = np.where(mass_shooters['Recent or Ongoing Stressor'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['recent_or_ongoing_stressor_recent_breakup'] = np.where(mass_shooters['Recent or Ongoing Stressor'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['recent_or_ongoing_stressor_employment'] = np.where(mass_shooters['Recent or Ongoing Stressor'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['recent_or_ongoing_stressor_economic_stressor'] = np.where(mass_shooters['Recent or Ongoing Stressor'].astype(str).str.contains('3'), 1, 0)
+    mass_shooters['recent_or_ongoing_stressor_family_issue'] = np.where(mass_shooters['Recent or Ongoing Stressor'].astype(str).str.contains('4'), 1, 0)
+    mass_shooters['recent_or_ongoing_stressor_legal_issue'] = np.where(mass_shooters['Recent or Ongoing Stressor'].astype(str).str.contains('5'), 1, 0)
+    mass_shooters['recent_or_ongoing_stressor_other'] = np.where(mass_shooters['Recent or Ongoing Stressor'].astype(str).str.contains('6'), 1, 0)
+    mass_shooters['substance_use_no_evidence'] = np.where(mass_shooters['Substance Use'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['substance_use_alcohol'] = np.where(mass_shooters['Substance Use'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['substance_use_marijuana'] = np.where(mass_shooters['Substance Use'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['substance_use_other_drugs'] = np.where(mass_shooters['Substance Use'].astype(str).str.contains('3'), 1, 0)
+    mass_shooters['known_prejudices_no_evidence'] = np.where(mass_shooters['Known Prejudices\xa0'].astype(str).str.contains('0'), 1, 0)
+    mass_shooters['known_prejudices_racism'] = np.where(mass_shooters['Known Prejudices\xa0'].astype(str).str.contains('1'), 1, 0)
+    mass_shooters['known_prejudices_misogyny'] = np.where(mass_shooters['Known Prejudices\xa0'].astype(str).str.contains('2'), 1, 0)
+    mass_shooters['known_prejudices_homophobia'] = np.where(mass_shooters['Known Prejudices\xa0'].astype(str).str.contains('3'), 1, 0)
+    mass_shooters['known_prejudices_religious_hatred'] = np.where(mass_shooters['Known Prejudices\xa0'].astype(str).str.contains('4'), 1, 0)
+    mass_shooters['urban'] = np.where(mass_shooters['Urban/Suburban/Rural'] == 0, 1, 0)
+    mass_shooters['suburban'] = np.where(mass_shooters['Urban/Suburban/Rural'] == 1, 1, 0)
+    mass_shooters['rural'] = np.where(mass_shooters['Urban/Suburban/Rural'] == 2, 1, 0)
+    mass_shooters['race_white'] = np.where(mass_shooters['Race'] == 0, 1, 0)
+    mass_shooters['race_black'] = np.where(mass_shooters['Race'] == 1, 1, 0)
+    mass_shooters['race_hispanic'] = np.where(mass_shooters['Race'] == 2, 1, 0)
+    mass_shooters['race_asian'] = np.where(mass_shooters['Race'] == 3, 1, 0)
+    mass_shooters['race_middle_eastern'] = np.where(mass_shooters['Race'] == 4, 1, 0)
+    mass_shooters['race_native_american'] = np.where(mass_shooters['Race'] == 5, 1, 0)
+    mass_shooters['race_moroccan'] = np.where(mass_shooters['Race'] == 6, 1, 0)
+    mass_shooters['race_bosnian'] = np.where(mass_shooters['Race'] == 7, 1, 0)
+    mass_shooters['relationship_status_single'] = np.where(mass_shooters['Relationship Status'] == 0, 1, 0)
+    mass_shooters['relationship_status_boyfriend_girlfriend'] = np.where(mass_shooters['Relationship Status'] == 1, 1, 0)
+    mass_shooters['relationship_status_married'] = np.where(mass_shooters['Relationship Status'] == 2, 1, 0)
+    mass_shooters['relationship_status_divorce_separated'] = np.where(mass_shooters['Relationship Status'] == 3, 1, 0)
+    mass_shooters['employment_type_blue_collar'] = np.where(mass_shooters['Employment Type\xa0'] == 0, 1, 0)
+    mass_shooters['employment_type_white_collar'] = np.where(mass_shooters['Employment Type\xa0'] == 1, 1, 0)
+    mass_shooters['employment_type_in_between'] = np.where(mass_shooters['Employment Type\xa0'] == 2, 1, 0)
+    mass_shooters['military_service_no'] = np.where(mass_shooters['Military Service'] == 0, 1, 0)
+    mass_shooters['military_service_yes'] = np.where(mass_shooters['Military Service'] == 1, 1, 0)
+    mass_shooters['military_service_joined_but_did_not_complete_training'] = np.where(mass_shooters['Military Service'] == 2, 1, 0)
+    mass_shooters['community_involvement_no_evidence'] = np.where(mass_shooters['Community Involvement'] == 0, 1, 0)
+    mass_shooters['community_involvement_somewhat'] = np.where(mass_shooters['Community Involvement'] == 1, 1, 0)
+    mass_shooters['community_involvement_heavily_involved'] = np.where(mass_shooters['Community Involvement'] == 2, 1, 0)
+    mass_shooters['community_involvement_formerly_involved'] = np.where(mass_shooters['Community Involvement'] == 3, 1, 0)
+    mass_shooters['highest_level_of_justice_system_involvement_na'] = np.where(mass_shooters['Highest Level of Justice System Involvement'] == 0, 1, 0)
+    mass_shooters['highest_level_of_justice_system_involvement_suspected'] = np.where(mass_shooters['Highest Level of Justice System Involvement'] == 1, 1, 0)
+    mass_shooters['highest_level_of_justice_system_involvement_arrested'] = np.where(mass_shooters['Highest Level of Justice System Involvement'] == 2, 1, 0)
+    mass_shooters['highest_level_of_justice_system_involvement_charged'] = np.where(mass_shooters['Highest Level of Justice System Involvement'] == 3, 1, 0)
+    mass_shooters['highest_level_of_justice_system_involvement_convicted'] = np.where(mass_shooters['Highest Level of Justice System Involvement'] == 4, 1, 0)
+    mass_shooters['history_of_physical_altercations_na'] = np.where(mass_shooters['History of Physical Altercations'] == 0, 1, 0)
+    mass_shooters['history_of_physical_altercations_yes'] = np.where(mass_shooters['History of Physical Altercations'] == 1, 1, 0)
+    mass_shooters['history_of_physical_altercations_attacked_inanimate_objects_during_arguments'] = np.where(mass_shooters['History of Physical Altercations'] == 2, 1, 0)
+    mass_shooters['history_of_domestic_abuse_na'] = np.where(mass_shooters['History of Domestic Abuse'] == 0, 1, 0)
+    mass_shooters['history_of_domestic_abuse_abused_romantic_partner'] = np.where(mass_shooters['History of Domestic Abuse'] == 1, 1, 0)
+    mass_shooters['history_of_domestic_abuse_abused_other_family'] = np.where(mass_shooters['History of Domestic Abuse'] == 2, 1, 0)
+    mass_shooters['known_hate_group_or_chat_room_affiliation_no_evidence'] = np.where(mass_shooters['Known Hate Group or Chat Room Affiliation'] == 0, 1, 0)
+    mass_shooters['known_hate_group_or_chat_room_affiliation_hate_group'] = np.where(mass_shooters['Known Hate Group or Chat Room Affiliation'] == 1, 1, 0)
+    mass_shooters['known_hate_group_or_chat_room_affiliation_other_radical_group'] = np.where(mass_shooters['Known Hate Group or Chat Room Affiliation'] == 2, 1, 0)
+    mass_shooters['known_hate_group_or_chat_room_affiliation_inspired_by_hate_group_but_no_connection'] = np.where(mass_shooters['Known Hate Group or Chat Room Affiliation'] == 3, 1, 0)
+    mass_shooters['known_hate_group_or_chat_room_affiliation_website_or_chat'] = np.where(mass_shooters['Known Hate Group or Chat Room Affiliation'] == 4, 1, 0)
+    mass_shooters['violent_video_games_no_evidence'] = np.where(mass_shooters['Violent Video Games'] == 0, 1, 0)
+    mass_shooters['violent_video_games_yes'] = np.where(mass_shooters['Violent Video Games'] == 1, 1, 0)
+    mass_shooters['violent_video_games_played_unspecified'] = np.where(mass_shooters['Violent Video Games'] == 2, 1, 0)
+    mass_shooters['violent_video_games_na'] = np.where(mass_shooters['Violent Video Games'] == 3, 1, 0)
+    mass_shooters['timeline_of_signs_of_crisis_days_before'] = np.where(mass_shooters['Timeline of Signs of Crisis'] == 0, 1, 0)
+    mass_shooters['timeline_of_signs_of_crisis_weeks_before'] = np.where(mass_shooters['Timeline of Signs of Crisis'] == 1, 1, 0)
+    mass_shooters['timeline_of_signs_of_crisis_months_before'] = np.where(mass_shooters['Timeline of Signs of Crisis'] == 2, 1, 0)
+    mass_shooters['timeline_of_signs_of_crisis_years_before'] = np.where(mass_shooters['Timeline of Signs of Crisis'] == 3, 1, 0)
+    mass_shooters['suicidality_no_evidence'] = np.where(mass_shooters['Suicidality'] == 0, 1, 0)
+    mass_shooters['suicidality_yes_prior_to_shooting'] = np.where(mass_shooters['Suicidality'] == 1, 1, 0)
+    mass_shooters['suicidality_intended_to_die_in_shooting_no_prior'] = np.where(mass_shooters['Suicidality'] == 2, 1, 0)
+    mass_shooters['voluntary_or_involuntary_hospitalization_na'] = np.where(mass_shooters['Voluntary or Involuntary Hospitalization'] == 0, 1, 0)
+    mass_shooters['voluntary_or_involuntary_hospitalization_voluntary'] = np.where(mass_shooters['Voluntary or Involuntary Hospitalization'] == 1, 1, 0)
+    mass_shooters['voluntary_or_involuntary_hospitalization_involuntary'] = np.where(mass_shooters['Voluntary or Involuntary Hospitalization'] == 2, 1, 0)
+    mass_shooters['motive_racism_xenophobia_no_evidence'] = np.where(mass_shooters['Motive: Racism/Xenophobia'] == 0, 1, 0)
+    mass_shooters['motive_racism_xenophobia_targeting_color'] = np.where(mass_shooters['Motive: Racism/Xenophobia'] == 1, 1, 0)
+    mass_shooters['motive_racism_xenophobia_targeting_white'] = np.where(mass_shooters['Motive: Racism/Xenophobia'] == 2, 1, 0)
+    mass_shooters['motive_religious_hate_no_evidence'] = np.where(mass_shooters['Motive: Religious Hate'] == 0, 1, 0)
+    mass_shooters['motive_religious_hate_antisemitism'] = np.where(mass_shooters['Motive: Religious Hate'] == 1, 1, 0)
+    mass_shooters['motive_religious_hate_islamophobia'] = np.where(mass_shooters['Motive: Religious Hate'] == 2, 1, 0)
+    mass_shooters['motive_religious_hate_angry_with_christianity_or_god'] = np.where(mass_shooters['Motive: Religious Hate'] == 3, 1, 0)
+    mass_shooters['motive_other_no_evidence'] = np.where(mass_shooters['Motive: Other\xa0'] == 0, 1, 0)
+    mass_shooters['motive_other_yes'] = np.where(mass_shooters['Motive: Other\xa0'] == 1, 1, 0)
+    mass_shooters['motive_other_generalized_anger'] = np.where(mass_shooters['Motive: Other\xa0'] == 2, 1, 0)
+    mass_shooters['role_of_psychosis_in_the_shooting_no_evidence'] = np.where(mass_shooters['Role of Psychosis in the Shooting'] == 0, 1, 0)
+    mass_shooters['role_of_psychosis_in_the_shooting_minor_role'] = np.where(mass_shooters['Role of Psychosis in the Shooting'] == 1, 1, 0)
+    mass_shooters['role_of_psychosis_in_the_shooting_moderate_role'] = np.where(mass_shooters['Role of Psychosis in the Shooting'] == 2, 1, 0)
+    mass_shooters['role_of_psychosis_in_the_shooting_major_role'] = np.where(mass_shooters['Role of Psychosis in the Shooting'] == 3, 1, 0)
+    mass_shooters['social_media_use_no_evidence'] = np.where(mass_shooters['Social Media Use\xa0'] == 0, 1, 0)
+    mass_shooters['social_media_use_yes'] = np.where(mass_shooters['Social Media Use\xa0'] == 1, 1, 0)
+    mass_shooters['social_media_use_na'] = np.where(mass_shooters['Social Media Use\xa0'] == 2, 1, 0)
+    mass_shooters['pop_culture_connection_no_evidence'] = np.where(mass_shooters['Pop Culture Connection'] == 0, 1, 0)
+    mass_shooters['pop_culture_connection_explicit_reference'] = np.where(mass_shooters['Pop Culture Connection'] == 1, 1, 0)
+    mass_shooters['pop_culture_connection_tangential_reference'] = np.where(mass_shooters['Pop Culture Connection'] == 2, 1, 0)
+    mass_shooters['firearm_proficiency_no_experience'] = np.where(mass_shooters['Firearm Proficiency'] == 0, 1, 0)
+    mass_shooters['firearm_proficiency_some_experience'] = np.where(mass_shooters['Firearm Proficiency'] == 1, 1, 0)
+    mass_shooters['firearm_proficiency_more_experienced'] = np.where(mass_shooters['Firearm Proficiency'] == 2, 1, 0)
+    mass_shooters['firearm_proficiency_very_experienced'] = np.where(mass_shooters['Firearm Proficiency'] == 3, 1, 0)
+    casualties_col = [
+    'Number Killed',
+    'Number Injured'
+    ]
+    mass_shooters['agg_casualties'] = mass_shooters[casualties_col].sum(axis=1)
+    mass_shooters['shooter_volatility'] = np.where(mass_shooters.agg_casualties > 10, 'High Volatility', 'Low Volatility')
+    unaggregated_mass_shooters = mass_shooters
+    return unaggregated_mass_shooters
+
+# =======================================================================================================
+# unaggregated_mass_shooters END
 # =======================================================================================================
